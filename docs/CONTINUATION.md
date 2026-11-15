@@ -1,5 +1,34 @@
 # HandJob continuation
 
+## Main publication update — 2026-11-15
+
+User authorized publishing the latest reviewed application to fork main, shortening README to title/tagline, personal origin, attribution and license, with no README logo. Technical README content moved to docs/PROJECT_GUIDE.md. Current hosting choice is local-only on this laptop at http://127.0.0.1:5088; HOSTING.md is reference guidance, not an active deployment request. Prior hosting next steps below are superseded by local-only preference.
+
+Publication includes HJ-PLAY-001 advisory review and preview-template recovery, with associated tests/docs. Excludes the two unrelated untracked Synthesia metadata prototypes. Observed validation: 79 discovered tests passed (75 project plus 4 local prototype tests); JavaScript syntax and git diff --check passed. Origin/main fetched at a1d61d13fb402e3fccae3fd85ec839842a6f7bca, whose sole change removes the README logo; that change is retained. No public server or GitHub Pages runtime is created. Publication result must be verified after push; older uncommitted checkpoints below are historical.
+
+## Preview recovery — 2026-11-15
+
+User reported inactive buttons. Browser console reproduced missing-element errors: old cached Jinja markup had no checkPlayability/reviewSummary while the current editor.js expected them. Import set busy before render threw, leaving file selection disabled. Restarted preview with matching current code and added TEMPLATES_AUTO_RELOAD=True plus web assertions for reload and review-control markup. All 11 web tests and whitespace checks passed. Actual browser imported bundled 69-note MIDI, both check/export controls enabled, /api/review completed and export showed “MIDI checks passed”; new tab error log empty. Screenshot: ignored output/playability-restored.png. New user-facing tab retained with example loaded; user must import their own MIDI again.
+
+Final background launcher PID 12088, listener child PID 38292 on 127.0.0.1:5088 verified, HTTP 200. Old and temporary verification servers stopped. Re-verify process commands before future stopping. No commit/push. This supersedes the earlier no-restart and unperformed-interactive-check statements for these controls only; physical devices remain untested.
+
+## HJ-PLAY-001 checkpoint — 2026-11-15
+
+Branch `fix/hj-play-001`, base HEAD `60f07b409b61eb654ed51ebe8fb37c007eef722c`; origin fetch/push verified as shimuranmonk/hand-job only. Created from dirty `docs/hosting-diagnosis` without discarding edits. Prior README.md, hosting checkpoint in this file, docs/HOSTING.md, synthesia_metadata.py and tests/test_synthesia_metadata.py are preserved. No commits, pushes, merges, deployment or live preview restart performed. All new work remains local/uncommitted.
+
+User explicitly authorized the bounded playability patch, superseding historical on-paper restrictions for this task only. Implemented configurable advisory review after web inference and a stateless /api/review endpoint for manual choices. Review spans, tempo-aware rapid jumps, isolated crossings and continuity; never relabel automatically or block exports on these flags. UI has reasons, filter, explicit recheck and stale-flag clearing on edit/undo. Details, configuration, pipeline/track trace, limitations and acceptance evidence: PLAYABILITY.md (D-14).
+
+Verified with `.inference-venv/Scripts/python.exe -m unittest discover -s tests`: **79 tests passed** (75 project tests including 11 new checks, plus 4 pre-existing unrelated metadata prototype tests). JavaScript syntax passed via `Get-Content static/editor.js | node --check`; the initial path-based node check hit host EPERM, so stdin was used successfully. Python compileall of touched modules and git diff --check passed. No frontend build exists; Flask template rendering is covered by API tests. Original-checkpoint bundled example smoke: 69 notes, 9 flags, 626-byte event-validated export. Interactive new-control/device checks remain unperformed.
+
+Named Takap sa Dilim exported MIDI not found in repository (including ignored files). Screenshot contents and external viewer URL/legend are unavailable here. Exact original pitches/timestamps/overlap and orange/blue mapping remain unresolved; do not claim impossible motion or a confirmed classifier cause. Synthetic overlap/tempo/chord fixtures provide targeted regression evidence only. Next bounded action: obtain original exported MIDI and viewer settings, correlate hand lane IDs with viewer colors, then inspect actual concurrent notes. Original model weights, normalization, MIDI exporter and private files are unchanged.
+
+## Hosting diagnostic checkpoint — 2026-11-15
+
+Task branch docs/hosting-diagnosis, based on main 60f07b409b61eb654ed51ebe8fb37c007eef722c.
+User requested diagnosing the README shown at the Pages URL. Actual app is Flask/Jinja/plain JS with Python/PyTorch POST APIs, not a static frontend build. No tracked .github workflow; connector returned no runs for current commit. Pages settings API returned unauthenticated 404; exact source settings remain unverified. See HOSTING.md for evidence and same-origin Python hosting recommendation. README now points there. No application rewrite or Pages workflow added because Pages cannot execute this backend.
+
+All 10 web API tests passed in .inference-venv. Preserve unrelated untracked synthesia_metadata.py and tests/test_synthesia_metadata.py. Documentation changes are local, uncommitted and unpushed; no hosting resources or live configuration changed. Next action: choose Python hosting and access/upload policy, validate target environment and production WSGI setup, then deploy and verify actual HTTPS app URL. Pages can then link/redirect to that URL. Do not claim the Pages app is fixed or invent a backend URL.
+
 Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; branch main (published fork default).
 
 Latest completed slice: piano-only MVP scope (D-12), approved by the user. Programs 0–5 or unspecified default piano are accepted; active percussion channel 9 or other declared programs are rejected before prediction, without dropping events. All piano hand/voice tracks form one performance. No instrument-selection workflow. Web/CLI/core checks and piano-specific UI copy are implemented; all 11 supplied files pass the scope check. See piano-scope-verification.json: 68 discovered tests pass (64 project methods plus four unrelated local metadata-prototype methods), and the live preview rejects percussion with HTTP 400. Prior latest-verification.json is a historical pre-scope snapshot.

@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const state = {file:null, notes:[], tracks:[], ppq:480, selected:new Set(), history:[], page:0, busy:false};
+  const state = {review:null, file:null, notes:[], tracks:[], ppq:480, selected:new Set(), history:[], page:0, busy:false};
   const pageSize = 100;
   const pitchNames = ['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
   const pitchName = pitch => `${pitchNames[pitch % 12]}${Math.floor(pitch / 12) - 1}`;
@@ -17,7 +17,7 @@
     const query = $('search').value.trim().toLowerCase();
     const hand = $('handFilter').value, track = $('trackFilter').value;
     return state.notes.filter(n => (!query || pitchName(n.pitch).toLowerCase().includes(query) || String(n.pitch) === query) &&
-      (!hand || (hand === 'EDITED' ? changed(n) : n.hand === hand)) && (!track || String(n.track) === track));
+      (!hand || (hand === 'FLAGGED' ? state.review?.flags.some(f=>f.note_ids.includes(n.id)) : hand === 'EDITED' ? changed(n) : n.hand === hand)) && (!track || String(n.track) === track));
   }
   function setBusy(value) {
     state.busy = value;
@@ -51,6 +51,8 @@
       const name = document.createElement('td'), strong = document.createElement('strong'), sub = document.createElement('span');
       strong.textContent = pitchName(n.pitch);
       if (changed(n)) {const dot = document.createElement('span'); dot.className='edited-indicator'; dot.title='Hand edited'; strong.append(dot);}
+      const issues=state.review?.flags.filter(f=>f.note_ids.includes(n.id)) || [];
+      if(issues.length){const warning=document.createElement('span'); warning.className='secondary'; warning.title=issues.map(f=>`${f.kind}: notes ${f.note_ids.join(', ')}; ${f.tick!==undefined?'tick '+f.tick:f.seconds.toFixed(3)+' seconds'}${f.semitones!==undefined?'; '+f.semitones+' semitones':''}`).join('\n'); warning.textContent='Review: '+issues.map(f=>f.kind.replaceAll('_',' ')).join(', '); name.append(warning);}
       sub.className='secondary'; sub.textContent=`MIDI ${n.pitch}`; name.append(strong, sub); tr.append(name);
       tr.append(cell((n.start_tick/state.ppq+1).toFixed(2)), cell((n.duration_ticks/state.ppq).toFixed(2), 'duration-column'));
       const trackName = state.tracks.find(t=>t.index===n.track)?.name || `Track ${n.track+1}`;
@@ -61,6 +63,8 @@
       for (const hand of ['LEFT','RIGHT']) {const o=document.createElement('option'); o.value=hand; o.textContent=hand==='LEFT'?'Left hand':'Right hand'; select.append(o);}
       select.value=n.hand; select.addEventListener('change',()=>applyChanges([n.id], select.value)); handCell.append(select); tr.append(handCell); body.append(tr);
     }
+    $('checkPlayability').disabled=state.busy || !state.file;
+    $('reviewSummary').textContent=state.review ? `${state.review.flags.length} advisory flags${state.review.truncated?' (limit reached; more may exist)':''}. Review flagged notes; crossings can be intentional.` : 'Playability review pending. Check current hands after edits; flags never change your choices.';
     const total=state.notes.length, edits=state.notes.filter(changed).length;
     $('editCount').textContent=`${number(edits)} ${edits===1?'edit':'edits'}`;
     $('leftCount').textContent=number(state.notes.filter(n=>n.hand==='LEFT').length);
@@ -88,7 +92,7 @@
     if (state.busy) return;
     const wanted=new Set(ids), changes=[];
     for (const n of state.notes) if(wanted.has(n.id)) {const next=hand==='RESTORE'?n.suggested_hand:hand; if(next!==n.hand){changes.push({id:n.id, before:n.hand}); n.hand=next;}}
-    if(changes.length){state.history.push(changes); if(state.history.length>50)state.history.shift();}
+    if(changes.length){state.review=null; state.history.push(changes); if(state.history.length>50)state.history.shift();}
     render();
   }
   async function checkResponse(response) {
@@ -104,7 +108,7 @@
       const data=new FormData(); data.append('midi',file);
       const response=await checkResponse(await fetch('/api/analyze',{method:'POST',body:data}));
       const result=await response.json();
-      state.file=file; state.notes=result.notes; state.tracks=result.tracks; state.ppq=result.ticks_per_beat;
+      state.review=result.review; state.file=file; state.notes=result.notes; state.tracks=result.tracks; state.ppq=result.ticks_per_beat;
       state.selected.clear(); state.history=[]; state.page=0;
       $('search').value=''; $('handFilter').value=''; $('trackFilter').replaceChildren(new Option('All tracks',''));
       for(const track of state.tracks)$('trackFilter').append(new Option(track.name,String(track.index)));
@@ -126,8 +130,15 @@
   $('setLeft').addEventListener('click',()=>applyChanges(state.selected,'LEFT'));
   $('setRight').addEventListener('click',()=>applyChanges(state.selected,'RIGHT'));
   $('restoreSelected').addEventListener('click',()=>applyChanges(state.selected,'RESTORE'));
-  $('undo').addEventListener('click',()=>{const changes=state.history.pop();if(changes){const map=new Map(changes.map(c=>[c.id,c.before]));for(const n of state.notes)if(map.has(n.id))n.hand=map.get(n.id);render();}});
+  $('undo').addEventListener('click',()=>{const changes=state.history.pop();if(changes){state.review=null;const map=new Map(changes.map(c=>[c.id,c.before]));for(const n of state.notes)if(map.has(n.id))n.hand=map.get(n.id);render();}});
   $('prevPage').addEventListener('click',()=>{state.page--;render();}); $('nextPage').addEventListener('click',()=>{state.page++;render();});
+  $('checkPlayability').addEventListener('click',async()=>{
+    if(!state.file || state.busy)return;
+    setBusy(true);
+    try{const data=new FormData();data.append('midi',state.file);data.append('assignments',JSON.stringify(Object.fromEntries(state.notes.map(n=>[n.id,n.hand]))));
+      const response=await checkResponse(await fetch('/api/review',{method:'POST',body:data})); state.review=await response.json();
+    }catch(error){status(error.message,'error');}finally{setBusy(false);}
+  });
   $('exportButton').addEventListener('click',async()=>{
     if(!state.file || state.busy)return;
     setBusy(true);status('Checking timing and events before export…','busy');

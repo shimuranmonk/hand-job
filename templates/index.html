@@ -32,9 +32,10 @@
       </aside>
       <section id="review" class="card review" aria-labelledby="reviewTitle" aria-busy="false">
         <header class="review-header"><div><h2 id="reviewTitle">Review the hands</h2><p id="reviewDetail">Import a MIDI to get started</p></div><span id="editCount" class="edit-count">0 edits</span></header>
+        <div class="filters"><p id="reviewSummary" role="status">Playability flags are advisory; crossings can be intentional.</p><button id="checkPlayability" disabled>Check current hands</button></div>
         <div class="filters">
           <label class="search-label" for="search">Find a note<input id="search" type="search" placeholder="Note name or MIDI pitch" autocomplete="off"></label>
-          <label for="handFilter">Hand<select id="handFilter"><option value="">All hands</option><option value="LEFT">Left hand</option><option value="RIGHT">Right hand</option><option value="EDITED">Edited notes</option></select></label>
+          <label for="handFilter">Hand<select id="handFilter"><option value="">All hands</option><option value="LEFT">Left hand</option><option value="RIGHT">Right hand</option><option value="EDITED">Edited notes</option><option value="FLAGGED">Review flagged notes</option></select></label>
           <label for="trackFilter">Source track<select id="trackFilter"><option value="">All tracks</option></select></label>
         </div>
         <div class="groupbar" aria-label="Group editing">

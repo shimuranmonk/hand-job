@@ -1,5 +1,11 @@
 # HandJob — Authoritative Initial Project Handover
 
+Current authorized follow-up (2026-11-15): HJ-PLAY-001 adds bounded, configurable,
+timing-aware advisory playability review without automatic reassignment. See
+[PLAYABILITY.md](PLAYABILITY.md) and the newest CONTINUATION checkpoint for evidence,
+limits and missing original MIDI/viewer mapping. Historical phase restrictions below
+do not supersede this explicit user-authorized small patch.
+
 Date: 2026-11-15 (Asia/Manila).
 Status: initial planning authority retained below as historical context. The prerequisite was cleared by commit d0908f8; subsequent baseline audit and bounded implementation checks are recorded in CONTINUATION.md. The MVP is not release-verified.
 Authority: the user's finalized decisions in the current handover request, informed by [Review repository fork](chatgpt-conversation://6af8fe9d-b344-83ec-aa49-b6dbd29c27aa). The current request controls if earlier discussion differs.

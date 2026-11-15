@@ -7,7 +7,8 @@ from flask import Flask, jsonify, render_template, request, send_file
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-from hand_service import InvalidMIDIInput, analyze_midi, corrected_export
+from hand_service import InvalidMIDIInput, analyze_midi, corrected_export, review_assignments
+from playability import ReviewConfig
 from inference import load_inference_model
 from midi_validation import MIDIIntegrityError
 
@@ -21,7 +22,10 @@ def create_app(config=None):
         MAX_MIDI_NOTES=20000,
         MODEL_PATH=ROOT/'example/checkpoint.pth',
         MODEL_LOADER=load_inference_model,
+        PLAYABILITY_CONFIG=ReviewConfig(),
         SEND_FILE_MAX_AGE_DEFAULT=0,
+        # This local preview must not cache old markup while serving edited JS.
+        TEMPLATES_AUTO_RELOAD=True,
     )
     if config:
         app.config.update(config)
@@ -81,7 +85,18 @@ def create_app(config=None):
         # Validate before loading the checkpoint on the first request.
         from hand_service import parse_source
         parse_source(data, app.config['MAX_MIDI_NOTES'])
-        return jsonify(analyze_midi(data, model(), app.config['MAX_MIDI_NOTES']))
+        return jsonify(analyze_midi(data, model(), app.config['MAX_MIDI_NOTES'], app.config['PLAYABILITY_CONFIG']))
+
+    @app.post('/api/review')
+    @limiter.limit('30 per minute')
+    def review():
+        data = uploaded_data()
+        try:
+            assignments = json.loads(request.form.get('assignments', ''))
+        except (TypeError, ValueError) as error:
+            raise InvalidMIDIInput('Hand choices could not be read.') from error
+        return jsonify(review_assignments(data, assignments, app.config['MAX_MIDI_NOTES'],
+                                          app.config['PLAYABILITY_CONFIG']))
 
     @app.post('/api/export')
     @limiter.limit('30 per minute')

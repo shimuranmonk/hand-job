@@ -51,6 +51,8 @@ class WebAPITests(unittest.TestCase):
         return self.client.post(path, data=dict(midi=(io.BytesIO(self.data), 'input.mid'), **fields))
 
     def test_home_and_analyze_return_usable_note_data(self):
+        self.assertTrue(self.app.jinja_env.auto_reload)
+        self.assertIn(b'id="checkPlayability"', self.client.get('/').data)
         self.assertEqual(self.client.get('/').status_code, 200)
         response = self.upload('/api/analyze')
         self.assertEqual(response.status_code, 200)
@@ -75,6 +77,23 @@ class WebAPITests(unittest.TestCase):
             self.assertEqual(note_tracks, [0 if hand == 'LEFT' else 1])
             response.close()
         self.assertEqual(self.loads, 1)
+
+    def test_review_current_choices_without_loading_model_or_changing_export(self):
+        notes = self.upload('/api/analyze').get_json()['notes']
+        self.assertEqual(self.loads, 1)
+        choices = {n['id']: 'RIGHT' for n in notes}
+        response = self.upload('/api/review', assignments=json.dumps(choices))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('simultaneous_span', [f['kind'] for f in response.get_json()['flags']])
+        self.assertEqual(self.loads, 1)
+        choices[notes[0]['id']] = 'LEFT'
+        result = self.upload('/api/review', assignments=json.dumps(choices)).get_json()
+        self.assertEqual(result['flags'], [])
+        self.assertEqual(self.upload('/api/review', assignments='{}').status_code, 400)
+        exported = self.upload('/api/export', assignments=json.dumps({n['id']:'RIGHT' for n in notes}))
+        self.assertEqual(exported.status_code, 200)
+        validate_preservation(mido.MidiFile(file=io.BytesIO(self.data)), mido.MidiFile(file=io.BytesIO(exported.data)))
+        exported.close()
 
     def test_note_level_corrections_route_individual_notes(self):
         notes = self.upload('/api/analyze').get_json()['notes']
