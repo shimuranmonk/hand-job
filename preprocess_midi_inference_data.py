@@ -185,31 +185,23 @@ class PreprocessMIDIInferenceData():
 
     @staticmethod
     def run_inference_and_get_flat_results(model, notes_chunked_full, sequence_length):
-        if (len(notes_chunked_full) == 0):
+        """Infer full chunks plus an optional short final chunk, preserving note order."""
+        if not notes_chunked_full:
             return []
 
-        # We need to worry about if the last chunk is less than the sequence, as the model is trained in sequences of 16
-        last_chunk_index = len(notes_chunked_full)-1
-        last_chunk_length = len(notes_chunked_full[last_chunk_index])
-        is_last_chunk_too_short = last_chunk_length != sequence_length
+        # Copy the chunk containers so padding never changes caller-owned data.
+        chunks = [list(chunk) for chunk in notes_chunked_full]
+        note_count = sum(len(chunk) for chunk in chunks)
+        padding_count = sequence_length - len(chunks[-1])
+        if padding_count:
+            # Preserve the previous-chunk context used by the original model.
+            # A sole short chunk repeats its own notes until the batch is rectangular.
+            padding_source = chunks[-2] if len(chunks) > 1 else list(chunks[-1])
+            chunks[-1].extend(padding_source[i % len(padding_source)] for i in range(padding_count))
 
-        if (is_last_chunk_too_short):
-            second_to_last_chunk_full = notes_chunked_full[last_chunk_index-1]
-            second_to_last_chunk_partial = [note for note in second_to_last_chunk_full] # grab a copy of the second to last chunk
-            
-            spliced = second_to_last_chunk_partial[0:sequence_length - last_chunk_length] # get the number of notes needed to make the last chunk's sequence 16
-            remaining = notes_chunked_full.pop() # remove the last one
-            for note in spliced:
-                remaining.append(note) # add the number of notes needed to make the last chunk's sequence 16
-            notes_chunked_full.append(remaining) # push it back into notes_chunked
-
-        result = model(torch.tensor(notes_chunked_full, dtype=torch.float))
-
-        # remove the dummy notes added above
-        flat_result_with_dummy_data = [item for sublist in result for item in sublist]
-        flat_result = flat_result_with_dummy_data[0:-1*(sequence_length - last_chunk_length)]
-
-        return flat_result
+        result = model(torch.tensor(chunks, dtype=torch.float))
+        # An explicit real-note count also handles full chunks (no [:-0] slice).
+        return [item for sublist in result for item in sublist][:note_count]
 
     @staticmethod
     def get_handedness_from_all_notes(model=None, midi_input_filename=None):

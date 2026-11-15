@@ -1,41 +1,42 @@
 # HandJob continuation
 
-Updated: 2026-11-15, Asia/Manila. Mode: eFORGE Continue; initial Phase 0 audit delivered with open validation gates.
+Updated: 2026-11-15, Asia/Manila. Mode: eFORGE Continue; bounded sequence-completeness repair verified. Broader MVP/Phase 0 validation gates remain open.
 
 ## Verified starting state
 
 - Fork origin: https://github.com/shimuranmonk/hand-job.git; never push upstream.
-- Branch: audit/phase-0-continuation. Fast-forwarded from 83b3923 to handover commit d0908f889a91324a4caa1c944b2844fb5f71497f.
+- Branch: fix/sequence-completeness, created from local audit commit ee76f07f0e3398ef3297fc8523a66f4164044588. Handover commit d0908f889a91324a4caa1c944b2844fb5f71497f is an ancestor.
 - Local handover was compared with the remote text; an equivalent local backup is at ../HANDOVER.local-backup.md. Committed handover is authoritative.
 - Read AGENTS.md for operating rules; docs/HANDOVER.md for scope/AC; docs/DECISIONS.md for inherited approvals.
 
 ## Active bounded task
 
-Audit unchanged prototype; add only operating memory, audit tooling, synthetic fixtures, and evidence. Stop with findings, blockers, and exact next task. No rewrite, model replacement, or production framework decision.
+T-01 complete: user authorized “proceed” with minimal core environment and sequence-completeness repair. Only application change: run_inference_and_get_flat_results. It copies chunk containers, fills short sequences, preserves longer-piece padding context, and retains exactly the real note count. No rewrite, model replacement, or production framework decision.
 
-Initial requirements installation failed on deprecated sklearn package. Diagnostic environment .audit-venv uses scikit-learn and supplemental runtime dependencies without editing application files. `pip check` passes in this diagnostic environment only.
+Reference core: CPython 3.13.3 / Windows x64 / CPU, requirements/inference-core.txt. Fresh .inference-venv installation, `pip check`, and all six regression tests passed. See docs/INFERENCE_CORE.md, docs/core-verification.json, and docs/core-environment.txt. Original requirements and CLI/web defects remain separate.
 
 ## Findings and evidence
 
 - Read docs/PHASE_0_AUDIT.md for dispositions of H-01–H-08, priorities, and reproduction. Raw evidence: docs/audit/results.json and entry-point logs; tools/audit_baseline.py reproduces probes.
-- Checkpoint loads, state keys match, [1,16,1] forward shape. Stream inference retains 69/69 bundled example notes and 17/17 synthetic notes; synthetic 1/16/32-note files export zero notes.
-- Confirmed: pairing defects, lost tempo/controller/program/meta events, channel and PPQ changes, preprocessing mismatch, sequence truncation. Staff-sign mismatch observed; musical label orientation remains unresolved.
+- Historical audit (pre-repair): checkpoint loads and bundled example retains 69/69 notes, but synthetic 1/16/32-note files export zero. Keep docs/audit evidence unchanged as the original baseline.
+- Current regression: inputs of 0/1/7/8/15/16/17/31/32/33 notes yield one prediction and one exported note per input in fixtures deliberately isolating pairing. Order/no-mutation and direct model-output equivalence pass; checkpoint hash unchanged.
+- Remaining confirmed defects: pairing, lost tempo/controller/program/meta events, channel and PPQ changes, preprocessing mismatch. Staff-sign mismatch observed; musical label orientation remains unresolved.
 - Two distinct LSTM modules load successfully; repeated lstm config entries share weights. No checkpoint-load failure reproduced.
-- Original CLI fails on filename/file-object usage. Current Flask-Limiter API prevents server import. No application source was changed.
+- Original CLI fails on filename/file-object usage. Current Flask-Limiter API prevents server import. They are not covered by the minimal core environment or this repair.
 - No browser/device or Synthesia playback validation; no model accuracy score, training run, label corpus validation, or completed rights determination.
 
 ## Exact next task and boundaries
 
-Define supported minimal inference environment and sequence-test contract; then repair sequence completeness in a separate bounded task, keeping checkpoint and architecture unchanged. Boundary counts: 0/1/7/8/15/16/17/31/32/33; require exactly one output per input note. Pairing/preservation repairs follow separately.
+Next bounded task: repair note-on/off pairing (H-01). Establish channel/pitch identity, velocity-zero handling, consumption of each off event, overlap policy, and malformed-input behavior with fixtures before editing the pairing helper. Preserve this slice's sequence regression tests. Event/timing preservation follows as a separate task.
 
 Remaining Phase 0 gates: licensed evaluation data/provenance, musical staff/hand orientation, coherent runtime choice, actual platform usability, and Synthesia validation. Do not treat the audit report as a passing MVP gate.
 
 ## Repository checkpoint
 
-Base: d0908f889a91324a4caa1c944b2844fb5f71497f. Task-owned changes: AGENTS.md, this continuation, DECISIONS.md, PHASE_0_AUDIT.md, tools/audit_baseline.py, and docs/audit evidence. Resolve the audit commit with `git log -1` after committing this checkpoint. These audit changes are local only; no audit push is claimed or authorized by this checkpoint. Virtual environment is ignored, not committed. Handover remains unchanged and already remote.
+Base for T-01: ee76f07f0e3398ef3297fc8523a66f4164044588. Task-owned changes: the sequence helper, requirements/inference-core.txt, tests/test_sequence_inference.py, docs/INFERENCE_CORE.md, core environment/verification evidence, this continuation, and DECISIONS.md. Resolve the repair commit using `git log -1` after committing this checkpoint. Audit and repair commits are local only; no push is claimed or authorized by this checkpoint. Virtual environments are ignored, not committed. Handover remains unchanged and already remote.
 
 ## Lifecycle
 
-Business Challenge/Intent approvals inherited; Intent Analysis has initial evidence with open risks. PRD metrics, Solution Specification, and NFR gates pending. Existing implementation inherited, not quality-verified. See handover lifecycle table and audit report.
+Business Challenge/Intent approvals inherited; Intent Analysis retains open risks. User-approved T-01 bounded implementation and focused QC are verified; this does not pass the broader PRD/Solution Specification/NFR or MVP release gates. See handover lifecycle table and audit report.
 
-Advisory effort: High for runtime/feature-contract choices; Medium for the subsequent isolated regression repair once its design is settled. Settings unchanged. No product scope or framework choices were added during the audit.
+Advisory effort for next task: Medium for the bounded pairing repair; revisit if overlapping/malformed MIDI policy reveals material design uncertainty. Settings unchanged. No product scope or framework choices were added.

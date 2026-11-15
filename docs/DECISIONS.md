@@ -15,3 +15,13 @@ Authority: [initial handover](HANDOVER.md), user-approved 2026-11-15. These inhe
 Recommended direction, not approved framework selection: modular Python MIDI/inference/training/validation + API + responsive frontend; FastAPI and React remain candidates. Alternatives and rationale belong in a subsequent Phase 1 design decision.
 
 Audit execution note (not a product decision): isolated Python 3.13 environment with diagnostic dependencies may test unchanged code after original requirements fail. It is not a reproducible historical 2020 environment or an approved production toolchain.
+
+## D-08 — bounded core inference and sequence-completeness repair
+
+Status: implementation choice within the user's 2026-11-15 “proceed” authorization for the recommended next task. Evidence: [INFERENCE_CORE.md](INFERENCE_CORE.md), H-05 in the audit, and tests/test_sequence_inference.py.
+
+Choice: retain the original checkpoint and model; define a Windows/CPython 3.13 core reference environment separately from broken historical CLI/web packaging. Preserve previous-chunk padding for longer pieces, repeat a sole short input to fill its chunk, copy caller containers, and trim by real note count.
+
+Alternatives: unpadded variable-length model invocation would change the existing batching contract; zero padding would change existing context for longer partial pieces; model/runtime replacement is unnecessary for this defect. The selected repair preserves the working longer-piece context and restores missing outputs with one helper change.
+
+Consequence: sequence completeness is testable independently of pairing and event-preservation failures. This is not production-platform approval or evidence of model accuracy. Revisit if evaluation demonstrates a better padding policy or the model/feature contract changes. FR-02 / AC-02 and the H-05 portion of AC-04 only.

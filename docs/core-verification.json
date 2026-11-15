@@ -1,0 +1,19 @@
+{
+  "python": "3.13.3",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "fresh_environment": ".inference-venv",
+  "base_commit": "ee76f07f0e3398ef3297fc8523a66f4164044588",
+  "checkpoint_sha256": "638d1359db7ecafa252b0b3739fbb58595e25e4b05ed6ece4566d96dc1faac36",
+  "checks": {
+    "dependencies": {
+      "command": "python -m pip check",
+      "returncode": 0,
+      "output": "No broken requirements found.\n"
+    },
+    "regression": {
+      "command": "python -m unittest discover -s tests -v",
+      "returncode": 0,
+      "output": "test_checkpoint_identity (test_sequence_inference.CheckpointIntegrationTests.test_checkpoint_identity) ... ok\ntest_full_sequence_outputs_match_direct_checkpoint_forward (test_sequence_inference.CheckpointIntegrationTests.test_full_sequence_outputs_match_direct_checkpoint_forward) ... ok\ntest_synthetic_midi_inference_and_export_has_one_label_per_note (test_sequence_inference.CheckpointIntegrationTests.test_synthetic_midi_inference_and_export_has_one_label_per_note) ... ok\ntest_each_real_note_retains_its_output_in_order_without_mutation (test_sequence_inference.SequenceCompletenessTests.test_each_real_note_retains_its_output_in_order_without_mutation) ... ok\ntest_existing_multi_chunk_padding_context_is_preserved (test_sequence_inference.SequenceCompletenessTests.test_existing_multi_chunk_padding_context_is_preserved) ... ok\ntest_generic_sequence_length (test_sequence_inference.SequenceCompletenessTests.test_generic_sequence_length) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 1.619s\n\nOK\n"
+    }
+  }
+}
