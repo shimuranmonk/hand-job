@@ -1,6 +1,6 @@
 # HandJob continuation
 
-Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; publication target main.
+Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; branch main (published fork default).
 
 Latest completed slice: piano-only MVP scope (D-12), approved by the user. Programs 0–5 or unspecified default piano are accepted; active percussion channel 9 or other declared programs are rejected before prediction, without dropping events. All piano hand/voice tracks form one performance. No instrument-selection workflow. Web/CLI/core checks and piano-specific UI copy are implemented; all 11 supplied files pass the scope check. See piano-scope-verification.json: 68 discovered tests pass (64 project methods plus four unrelated local metadata-prototype methods), and the live preview rejects percussion with HTTP 400. Prior latest-verification.json is a historical pre-scope snapshot.
 
@@ -11,7 +11,7 @@ The local preview was restarted with the documented core+web environment at http
 - Read AGENTS.md and this checkpoint; HANDOVER.md is approved scope, DECISIONS.md records choices.
 - Only fork origin https://github.com/shimuranmonk/hand-job.git; never push upstream.
 - Remote handover d0908f8; local audit ee76f07, sequence eb8d3b3, pairing 0d391db, source preservation 737d00a, CLI d751f06, ordering lanes 9216187. Web preview 281e268, decoder/evaluation 73d6cb2, compatibility packet tooling e53cd27. The final verification commit contains this checkpoint; use git log -1.
-- User now authorizes publishing the reviewed implementation and branding to main in the fork. Publication result must be checked against the remote; this checkpoint accompanies that publication. No hosted deployment is implied.
+- Publication verified: implementation and branding commit 2601a502e7c646b3990dd71ce79c3070f0904c65 is on origin/main, and GitHub returned default_branch=main for shimuranmonk/hand-job. This follow-up documentation checkpoint records that result. No hosted deployment occurred.
 - User approved preserving original tracks and splitting by hand, extending existing Flask, local MIDI testing, and reference mapping track 1 RIGHT / track 2 LEFT for the initial four files.
 
 ## Implemented and verified
