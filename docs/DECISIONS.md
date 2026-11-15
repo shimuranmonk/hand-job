@@ -25,3 +25,9 @@ Choice: retain the original checkpoint and model; define a Windows/CPython 3.13 
 Alternatives: unpadded variable-length model invocation would change the existing batching contract; zero padding would change existing context for longer partial pieces; model/runtime replacement is unnecessary for this defect. The selected repair preserves the working longer-piece context and restores missing outputs with one helper change.
 
 Consequence: sequence completeness is testable independently of pairing and event-preservation failures. This is not production-platform approval or evidence of model accuracy. Revisit if evaluation demonstrates a better padding policy or the model/feature contract changes. FR-02 / AC-02 and the H-05 portion of AC-04 only.
+
+## D-09 — MIDI integrity policies and export direction
+
+User explicitly selected “Preserve original tracks, split by hand” on 2026-11-15. Combining everything into two tracks is not selected. Keep original instruments, channels, timing, and events; actual Synthesia part behavior still requires validation.
+
+Within the authorized repair, channel/pitch pairing uses FIFO for overlapping same-pitch notes; releases are consumed once. Invalid/unmatched streams fail explicitly instead of dropping notes or inventing durations. The event validator conservatively rejects playback-relevant ordering changes during hand splitting. See [MIDI_INTEGRITY.md](MIDI_INTEGRITY.md) for evidence and limitations. Revisit these policies if a licensed fixture demonstrates an unsupported legitimate use case; do not silently relax preservation.

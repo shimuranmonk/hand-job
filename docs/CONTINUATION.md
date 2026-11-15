@@ -1,5 +1,7 @@
 # HandJob continuation
 
+Current checkpoint (supersedes T-01's next-action section below): branch fix/midi-integrity, based on eb8d3b3116aee5897c2c03336a2d7dba51b0042e. User authorized ongoing bounded work. T-02 pairing is verified (13 pairing/sequence tests); independent preservation-validator checks also pass (20 tests total). T-03 exporter is in progress; next action is source-aware export integration. See docs/MIDI_INTEGRITY.md and D-09. New validator files remain uncommitted until exporter integration. No remote push.
+
 Updated: 2026-11-15, Asia/Manila. Mode: eFORGE Continue; bounded sequence-completeness repair verified. Broader MVP/Phase 0 validation gates remain open.
 
 ## Verified starting state

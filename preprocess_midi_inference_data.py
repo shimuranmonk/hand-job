@@ -1,3 +1,5 @@
+from collections import defaultdict, deque
+
 import torch
 import mido
 from mido import MidiTrack, MidiFile, Message
@@ -56,46 +58,35 @@ class PreprocessMIDIInferenceData():
 
     @staticmethod
     def get_on_off_note_pairs(notes):
-        '''Midi files contain note on and note off messages. Find the matching note on/off combination and pull all into a dictionary.'''
-        all_notes = []
-
-        for note_idx, note in enumerate(notes):
-            if (note["type"] == "note_on"):
-                # Find the off note that follows this on note
-                for potential_off_note_index in range(note_idx + 1, len(notes)):
-                    potential_off_note = notes[potential_off_note_index]
-
-                    if (
-                        # some midi files use a "note_off" event to indicate a note is complete
-                        (
-                            potential_off_note["type"] == "note_off"
-                            and note["velocity"] == potential_off_note["velocity"]
-                        ) or (
-                            # some midi files use a "note_on" event with velocity 0 to indicate a note is complete
-                            potential_off_note["type"] == "note_on"
-                            and note["velocity"] == 0
-                        )
-                        and note["note"] == potential_off_note["note"]
-                    ):
-                        all_notes.append(
-                            {
-                                "note_on_note": note,
-                                "note_off_note": potential_off_note,
-                                "input_data": [
-                                    # duration
-                                    potential_off_note["time_so_far"] - note["time_so_far"],
-                                    # is a rest note
-                                    False,
-                                    # midi pitch
-                                    note["note"],
-                                    # time position
-                                    note["time_so_far"],
-                                ]
-                            }
-                        )
-                        break
-    
-        return all_notes
+        """Pair channel/pitch onsets and releases in FIFO order; reject broken streams."""
+        active = defaultdict(deque)
+        pairs = []
+        previous_tick = -1
+        for index, event in enumerate(notes):
+            tick = event["time_so_far"]
+            if tick < previous_tick:
+                raise ValueError("Note events must be ordered by absolute tick")
+            previous_tick = tick
+            key = (event["channel"], event["note"])
+            if event["type"] == "note_on" and event["velocity"] > 0:
+                active[key].append((index, event))
+            elif event["type"] == "note_off" or (
+                event["type"] == "note_on" and event["velocity"] == 0
+            ):
+                if not active[key]:
+                    raise ValueError(f"Unmatched note release at tick {tick}, channel/pitch {key}")
+                onset_index, onset = active[key].popleft()
+                pairs.append((onset_index, {
+                    "note_on_note": onset,
+                    "note_off_note": event,
+                    "input_data": [tick - onset["time_so_far"], False,
+                                   onset["note"], onset["time_so_far"]],
+                }))
+            else:
+                raise ValueError(f"Unsupported note event type: {event['type']}")
+        if any(active.values()):
+            raise ValueError("Unmatched note onset(s): MIDI contains notes without releases")
+        return [pair for _, pair in sorted(pairs, key=lambda item: item[0])]
 
     @staticmethod
     def combine_on_off_notes(notes):
