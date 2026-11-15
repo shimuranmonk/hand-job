@@ -1,17 +1,17 @@
 # HandJob continuation
 
-Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; branch fix/midi-integrity.
+Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; publication target main.
 
 Latest completed slice: piano-only MVP scope (D-12), approved by the user. Programs 0–5 or unspecified default piano are accepted; active percussion channel 9 or other declared programs are rejected before prediction, without dropping events. All piano hand/voice tracks form one performance. No instrument-selection workflow. Web/CLI/core checks and piano-specific UI copy are implemented; all 11 supplied files pass the scope check. See piano-scope-verification.json: 68 discovered tests pass (64 project methods plus four unrelated local metadata-prototype methods), and the live preview rejects percussion with HTTP 400. Prior latest-verification.json is a historical pre-scope snapshot.
 
-The local preview was restarted with the documented core+web environment at http://127.0.0.1:5088; launcher PID 17072 (verify before stopping). Two pre-existing untracked prototype files remain intentionally outside this slice: synthesia_metadata.py and tests/test_synthesia_metadata.py. No automatic Synthesia setup is claimed from their unit tests.
+The local preview was restarted with the documented core+web environment at http://127.0.0.1:5088; launcher PID 84548 (verify before stopping). Two pre-existing untracked prototype files remain intentionally outside this slice: synthesia_metadata.py and tests/test_synthesia_metadata.py. No automatic Synthesia setup is claimed from their unit tests.
 
 ## Authority and repository
 
 - Read AGENTS.md and this checkpoint; HANDOVER.md is approved scope, DECISIONS.md records choices.
 - Only fork origin https://github.com/shimuranmonk/hand-job.git; never push upstream.
 - Remote handover d0908f8; local audit ee76f07, sequence eb8d3b3, pairing 0d391db, source preservation 737d00a, CLI d751f06, ordering lanes 9216187. Web preview 281e268, decoder/evaluation 73d6cb2, compatibility packet tooling e53cd27. The final verification commit contains this checkpoint; use git log -1.
-- Audit/implementation commits are LOCAL ONLY. No push/merge/deployment occurred. User requested sustained progress, not repeated stops after each small task; remaining daily allowance is not visible.
+- User now authorizes publishing the reviewed implementation and branding to main in the fork. Publication result must be checked against the remote; this checkpoint accompanies that publication. No hosted deployment is implied.
 - User approved preserving original tracks and splitting by hand, extending existing Flask, local MIDI testing, and reference mapping track 1 RIGHT / track 2 LEFT for the initial four files.
 
 ## Implemented and verified
@@ -31,7 +31,7 @@ The local preview was restarted with the documented core+web environment at http
 - output/user-evaluation/manifest.json references the private input paths and four local label files. Original/corrected/diagnostic reports are separate. These and all musical derivatives remain ignored, never committed.
 - output/real-midi-checks-final/report.json: 11-file fidelity results. output/synthesia-validation/: 11 MIDI outputs + track maps + preparation report.
 - Historical docs/audit remains the original pre-repair evidence; baseline script now guards its source revision.
-- Local preview: http://127.0.0.1:5088, started hidden; replacement launcher PID 23196 (verify actual process before stopping it). User-facing browser tab retained. Screenshots output/editor-desktop.jpg and output/editor-mobile.jpg.
+- Local preview: http://127.0.0.1:5088, started hidden; replacement launcher PID 84548 (verify actual process before stopping it). User-facing browser tab retained. Screenshots output/editor-desktop.jpg and output/editor-mobile.jpg.
 
 ## Exact next action and blockers
 
@@ -44,3 +44,13 @@ After external compatibility evidence, formalize production NFR/architecture and
 ## Gates
 
 Inherited product scope retained; bounded repair/UI/evaluation slices verified. Broader PRD/NFR, production design, physical-device, Synthesia and release gates remain open. iOS excluded, player/fingers deferred, offline Android unresolved. Next work requires external compatibility evidence or an explicit next design decision; do not manufacture work to exhaust an unknowable allowance.
+
+## Branding/publication checkpoint — 2026-11-15
+
+Approved D-13: supplied logo at static/handjob-logo.png, black/gold/white UI, README name HandJob, exact tagline “We Know Exactly Where Your Fingers Should Go.” UI colors do not control Synthesia colors. Original attribution and CC BY-NC notice retained. User authorizes main publication to fork only.
+
+Verification for this slice: 64 tracked project unittest methods passed in the core+web environment; JavaScript syntax and git diff whitespace checks passed. Separate untracked metadata prototype tests were deliberately excluded. Browser branding checked at desktop 1440×900 and phone 390×844; logo loaded and no horizontal page overflow (1425/1425 and 375/375 CSS pixels). Screenshot: ignored output/brand-desktop.jpg. Local preview launcher PID 84548 (verify actual command before stopping).
+
+Exact next action after publication: the user tests exported MIDI in licensed Synthesia on Android phone and iPad. Record import, manual/automatic hand assignment, all parts, timing/tempo and complete playback for the test matrix. iPad testing is export compatibility only; iOS app development remains excluded. Complete desktop playback remains demo-limited, automatic hand setup unverified, and physical Android browser acceptance pending.
+
+Further features and production design are still on paper. Offline Android feasibility, broader independent licensed evaluation, preprocessing/training provenance, production NFR/privacy/hosting, optional Synthesia metadata integration, player and individual fingering remain unresolved or deferred. Do not implement these from this publication request. Preserve the two untracked metadata prototype files locally; they are not part of the published application.

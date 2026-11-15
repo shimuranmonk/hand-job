@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#172c36">
+  <meta name="theme-color" content="#000000">
   <title>HandJob · MIDI hand editor</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='editor.css') }}">
   <script src="{{ url_for('static', filename='editor.js') }}" defer></script>
@@ -11,11 +11,11 @@
 <body>
   <main class="shell">
     <header class="topbar">
-      <div class="brand"><span class="brand-icon" aria-hidden="true">♮</span>HandJob</div>
+      <div class="brand"><img class="brand-logo" src="{{ url_for('static', filename='handjob-logo.png') }}" alt="HandJob" width="980" height="600"></div>
       <span class="tag">MIDI HAND EDITOR · PREVIEW</span>
     </header>
     <section class="intro" aria-labelledby="title">
-      <div><p class="eyebrow">A little clarity for every passage</p><h1 id="title">Give every note a hand.</h1>
+      <div><p class="eyebrow">We Know Exactly Where Your Fingers Should Go.</p><h1 id="title">Give every note a hand.</h1>
       <p>Bring in a piano-only MIDI. Review the suggested hands, adjust a note or passage, then export with the music intact.</p></div>
       <div class="steps" aria-label="Workflow"><span><b>1</b>Import</span><span><b>2</b>Review</span><span><b>3</b>Export</span></div>
     </section>
@@ -27,7 +27,7 @@
         </div>
         <div class="file-info"><p id="fileName" class="file-name">No file selected</p><p id="fileDetail" class="file-detail">Your original stays unchanged.</p></div>
         <div class="legend"><div><span><i class="dot"></i>Left hand</span><strong id="leftCount">0</strong></div><div><span><i class="dot right-dot"></i>Right hand</span><strong id="rightCount">0</strong></div></div>
-        <p class="sidebar-note">Hand suggestions need your review. Synthesia playback has not yet been verified.</p>
+        <p class="sidebar-note">Hand suggestions need your review. Full Synthesia compatibility testing is still pending.</p>
         <button id="exportButton" class="primary export" disabled>Check &amp; export MIDI ↗</button>
       </aside>
       <section id="review" class="card review" aria-labelledby="reviewTitle" aria-busy="false">

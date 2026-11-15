@@ -53,3 +53,9 @@ Approved by the user on 2026-11-15: the Synthesia target is the main piano perfo
 Implementation accepts sounding notes with active zero-based programs 0–5 (acoustic/electric pianos), with unspecified programs assumed to be default piano 0. Active percussion channel 9 (human channel 10) or other declared instrument programs produce a clear unsupported-input error before prediction. Program state is followed by channel and time across source tracks. Track names are not trusted as instrument proof. Incomplete/misleading MIDI instrument declarations cannot be identified acoustically; this is a declared-instrument check, not audio recognition.
 
 No note/event is silently removed, no source instrument is converted, and no accompaniment is assigned to piano hands. The same policy applies to web analysis/export and core/CLI prediction. The low-level MIDI preservation engine remains independent of this product-level scope. All 11 supplied files pass this policy. Revisit mixed-instrument support only if the user expands scope.
+
+## D-13 — branding, fork publication, and next device checks
+
+Approved by the user on 2026-11-15: use their supplied HandJob logo and black, gold, white colors; exact tagline “We Know Exactly Where Your Fingers Should Go.” Publish the current reviewed preview to a main branch in the authorized fork. Preserve attribution and licensing notice. The tagline is branding; individual fingering is still deferred.
+
+Keep source-track splitting from D-09; do not flatten into two tracks. Next acceptance work is user testing with licensed Synthesia on Android phone and iPad. Remaining features and production design are planning on paper, not completed work. No iOS application, player, fingering, automatic Synthesia metadata integration, model replacement, or deployment is approved by this branding/publication task. Revisit after device results and an explicit next design decision.

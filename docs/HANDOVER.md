@@ -1,7 +1,7 @@
 # HandJob — Authoritative Initial Project Handover
 
 Date: 2026-11-15 (Asia/Manila).
-Status: initial planning authority; baseline audit NOT STARTED; no application tests run for this handover.
+Status: initial planning authority retained below as historical context. The prerequisite was cleared by commit d0908f8; subsequent baseline audit and bounded implementation checks are recorded in CONTINUATION.md. The MVP is not release-verified.
 Authority: the user's finalized decisions in the current handover request, informed by [Review repository fork](chatgpt-conversation://6af8fe9d-b344-83ec-aa49-b6dbd29c27aa). The current request controls if earlier discussion differs.
 
 ## 1. Purpose, authority, and immediate gate
@@ -167,3 +167,7 @@ At authoring: documentation-only task on local branch `audit/phase-0-continuatio
 Handover completion criteria: complete file exists; approved/recommended/unknown/hypothesis distinctions checked; only this file committed to the fork if access permits, otherwise user receives the file. The delivery response must state the verified remote commit hash or clearly state that upload remains pending. This document does not assert its own publication success.
 
 **Exact next action after delivery:** verify this handover's actual repository/local status, then initiate the bounded Phase 0 baseline-audit task from section 9. Until that task begins, Phase 0 remains NOT STARTED.
+
+## Approved publication and branding update — 2026-11-15
+
+Use the user-supplied HandJob logo, black/gold/white palette, and exact tagline “We Know Exactly Where Your Fingers Should Go.” Publish the reviewed working preview to main in shimuranmonk/hand-job only. Existing original checkpoint and upstream attribution remain. Further features and production design are still on paper; no implementation approval is inferred for deferred features. Next: user tests exported MIDI in licensed Synthesia on Android phone and iPad; collect import, hand-part, timing/tempo, and full-song playback results. iPad export testing does not add iOS application development. Finger assignment and player remain deferred; offline Android remains a feasibility question. See D-13 and current continuation for verification and publication status.

@@ -11,3 +11,5 @@
 - Load bounded relevant files; avoid repeated full scans. Record durable choices in `docs/DECISIONS.md`.
 - Update continuation with exact state, checks, blockers, approvals, and next bounded action before stopping.
 - Do not commit virtual environments, caches, downloaded dependencies, or third-party datasets. Audit outputs belong in `docs/audit/` only when reviewed.
+
+- Brand: supplied HandJob logo, black/gold/white, exact tagline “We Know Exactly Where Your Fingers Should Go.” Fingering remains deferred despite the branding. Next licensed Synthesia checks are on Android and iPad; iPad export testing does not expand iOS app scope. Further features/design remain on paper pending decisions.

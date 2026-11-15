@@ -1,8 +1,18 @@
-# MIDI Hands
+# HandJob
+
+**We Know Exactly Where Your Fingers Should Go.**
+
+![HandJob logo](static/handjob-logo.png)
+
+A black, gold, and white piano MIDI hand editor: predict left/right hands, review individual notes or groups, and export with timing, pitch, tempo, channels, and events checked. Individual finger assignment is a planned post-MVP feature; the tagline is branding, not a claim that fingering exists.
+
+**Status: working local preview, not a release-verified MVP.** Further features and production architecture are still being planned on paper. The next acceptance step is user testing of exported MIDI in licensed Synthesia on an Android phone and iPad. This does not add an iOS app to scope.
+
+Exports preserve source tracks and split their notes by hand; they can contain more than two parts. Automatic Synthesia hand setup is not yet verified.
 
 ## HandJob continuation
 
-Project scope and status: [handover](docs/HANDOVER.md), [continuation](docs/CONTINUATION.md), and [baseline audit](docs/PHASE_0_AUDIT.md). Development is fork-only. The original checkpoint is retained; [real MIDI results](docs/REAL_MIDI_RESULTS.md) record the four-piece development comparison and its limits. Actual Synthesia compatibility remains unverified.
+Project scope and status: [handover](docs/HANDOVER.md), [continuation](docs/CONTINUATION.md), and [baseline audit](docs/PHASE_0_AUDIT.md). Development is fork-only. The original checkpoint is retained; [real MIDI results](docs/REAL_MIDI_RESULTS.md) record the four-piece development comparison and its limits. A desktop Synthesia import, manual hand assignment, and demo-limited playback were observed; full compatibility remains unverified.
 
 For the verified Windows/Python 3.13 core setup:
 
@@ -23,7 +33,7 @@ MIDI Left and Right-Handedness Transcription (For Piano)
 
 ## What This Does
 
-Takes a midi file and returns a midi file with left and right handedness metadata added to the file.
+Imports piano-only MIDI, suggests left/right hand assignments, supports manual corrections, and exports validated MIDI hand subtracks. It does not yet guarantee automatic Synthesia hand assignments.
 
 ## How MIDI Works and Goal
 
@@ -39,7 +49,7 @@ A Pytorch LSTM neural net was used to predict left and right handedness on seque
 
 A checkpoint is made available for others to use in the `/example` folder. Parameters for learning are not hard-coded, and can be adjusted by adding a `trains.json` json file to the root of the project. An example file `/example/trains.example.json` is provided.
 
-## To run the model
+## Legacy training reference (not a verified modern training pipeline)
 
 - Add musicxml files numbered as 0000.musicxml, 0001.musicxml... to `source_data/musicxml`
 - Rename `/example/trains.example.json` to `trains.json` and move it to the root of the folder. 
@@ -63,6 +73,8 @@ python inference.py example/checkpoint.pth example/simple_midi.example.mid resul
 ```
 
 ## Credits
+
+HandJob continues the original [sarapple/midi_hands](https://github.com/sarapple/midi_hands) prototype. The original PyTorch LSTM checkpoint and historical training work are retained. Development and publication take place only in [shimuranmonk/hand-job](https://github.com/shimuranmonk/hand-job).
 
 A helper file from Magenta (Copyright 2020 The Magenta Authors)was pulled out and used, unaltered from the source.  This was done in favor of importing the large lib involved with installing Magenta. This was used for parseing MusicXML into a dictionary.
 

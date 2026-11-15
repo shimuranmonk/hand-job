@@ -49,3 +49,7 @@ Later real-file browser check: The Meadow imported 1,436 notes; the table render
 Current combined suite: 56 passing methods. The documented requirements/web.txt was installed into the original clean core environment, and final verification is in latest-verification.json with resolved packages in web-environment.txt. The earlier 42-method result above records the first web slice. See REAL_MIDI_RESULTS.md for the four-file accuracy comparison and 11-file preservation checks.
 
 Remaining quality gates: real device/browser matrix, licensed piece-level accuracy benchmark, scale/performance budgets, label/preprocessing validation, licensing review, and actual Synthesia import/hand/playback checks. No claim that the MVP or Phase 0 is fully passed.
+
+## Branding and current acceptance status — 2026-11-15
+
+User-supplied logo, black/gold/white theme, and approved tagline now identify the preview. Left/right labels remain explicit; these browser colors do not determine Synthesia part colors. Desktop Synthesia import/manual hands/demo-limited playback was observed (see SYNTHESIA_CHECK.md); full-song and licensed Android/iPad checks remain pending. All further features and production design remain on paper pending decisions.
