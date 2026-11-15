@@ -28,6 +28,13 @@ class RecordingModel:
 
 
 class SequenceCompletenessTests(unittest.TestCase):
+    def test_output_sign_matches_original_training_staff_labels(self):
+        from preprocess_data_lstm_helpers import PreprocessDataLSTMHelpers as L
+        encode = L._PreprocessDataLSTMHelpers__preprocess_output_note_staff
+        self.assertEqual(P.output_to_hand(encode('1')), 'RIGHT')
+        self.assertEqual(P.output_to_hand(encode('2')), 'LEFT')
+        self.assertEqual(P.output_to_hand(torch.tensor([0.])), 'RIGHT')
+
     def test_each_real_note_retains_its_output_in_order_without_mutation(self):
         for n in COUNTS:
             with self.subTest(notes=n):

@@ -17,6 +17,8 @@ import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+if subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip() != 'd0908f889a91324a4caa1c944b2844fb5f71497f':
+    raise SystemExit('Historical audit requires the original d0908f8 checkout. Use tools/check_midi_files.py for current code; baseline evidence is preserved.')
 OUT = ROOT / 'docs' / 'audit'
 OUT.mkdir(parents=True, exist_ok=True)
 results = {}

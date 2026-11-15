@@ -8,6 +8,13 @@ from utils import Utils
 from midi_engine import export_hands, read_midi, read_note_events
 
 class PreprocessMIDIInferenceData():
+    # Training: MusicXML staff 1 -> +1 (right), staff 2 -> -1 (left).
+    HAND_LABEL_CONVENTION = 'nonnegative RIGHT; negative LEFT'
+
+    @staticmethod
+    def output_to_hand(output):
+        return 'RIGHT' if output >= 0 else 'LEFT'
+
     @staticmethod
     def midifile_to_dict(mid):
         return read_note_events(mid)
@@ -189,7 +196,7 @@ class PreprocessMIDIInferenceData():
         flat_result = PreprocessMIDIInferenceData.run_inference_and_get_flat_results(model, notes_chunked_full, sequence_length)
 
         all_hands = [
-            ("RIGHT" if output <= 0 else "LEFT")
+            PreprocessMIDIInferenceData.output_to_hand(output)
             for output in flat_result
         ]
         hands_and_notes = [

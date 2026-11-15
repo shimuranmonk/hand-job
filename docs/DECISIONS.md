@@ -31,3 +31,17 @@ Consequence: sequence completeness is testable independently of pairing and even
 User explicitly selected “Preserve original tracks, split by hand” on 2026-11-15. Combining everything into two tracks is not selected. Keep original instruments, channels, timing, and events; actual Synthesia part behavior still requires validation.
 
 Within the authorized repair, channel/pitch pairing uses FIFO for overlapping same-pitch notes; releases are consumed once. Invalid/unmatched streams fail explicitly instead of dropping notes or inventing durations. The event validator conservatively rejects playback-relevant ordering changes during hand splitting. See [MIDI_INTEGRITY.md](MIDI_INTEGRITY.md) for evidence and limitations. Revisit these policies if a licensed fixture demonstrates an unsupported legitimate use case; do not silently relax preservation.
+
+## D-10 — extend Flask for the next MVP slice
+
+Approved by the user on 2026-11-15: “Extend the existing Flask app” with responsive manual corrections and a small API. A new-stack design was the alternative offered. React/FastAPI remain options rather than dependencies or locked choices.
+
+Implementation uses stateless request operations: original MIDI and current assignments remain in the browser and are submitted for validated export; no persistent server MIDI-session store is introduced. The original model is cached per application. Preview bounds and ephemeral-edit behavior are explicit in [WEB_PREVIEW.md](WEB_PREVIEW.md); they do not establish production NFR, offline support, or permanent-storage behavior. Revisit at deployment/performance/privacy design or when persistence becomes a requirement.
+
+## D-11 — confirmed reference tracks and corrected label decoding
+
+User confirmed track index 1=RIGHT and 2=LEFT for the initial four files on 2026-11-15. Files are authorized for private local evaluation; no redistribution/training permission or rights clearance is inferred. Seven later files received fidelity tests only.
+
+Original unchanged-checkpoint decoder scored 7.98% on 3,585 confirmed notes. Training helper encodes staff 1/right as +1, while inference called positive LEFT. The decoder now maps nonnegative RIGHT and negative LEFT, matching training semantics and its zero boundary. That correction scored 92.02% on the same small development sample versus pitch baseline 90.01%. No weights, architecture, or normalization changed. See REAL_MIDI_RESULTS.md; do not generalize this score or call the reused sample untouched held-out evidence.
+
+The separate non-rest=-1 diagnostic scored 92.64% overall but changed individual-piece results in both directions. It remains unactivated pending a broader preprocessing-contract review and independent labels. Actual Synthesia/device checks and release approval remain open.

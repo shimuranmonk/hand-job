@@ -43,4 +43,4 @@ Before repair, the tests produced 14 failing subcases and one error across six t
 
 Pairing and source-aware preservation repairs are recorded in MIDI_INTEGRITY.md. T-04 repaired the CLI: no training/web imports, config default relative to the source module, explicit alternate single-config support, correct stream/filename output, protected source filename, and clear nonzero failures. Five CLI tests plus prior tests pass (33 total) using only core dependencies, including subprocess execution from another working directory and no output for invalid MIDI.
 
-Web startup, preprocessing/label consistency, dataset rights, quality benchmarking, Android/device tests, and real Synthesia validation remain open.
+Later slices repaired Flask startup and added the responsive correction UI (WEB_PREVIEW.md). A confirmed four-piece comparison exposed and repaired the hand-sign decoder; REAL_MIDI_RESULTS.md records 92.02% on that development sample, with original weights and normalization retained. Generalization, full preprocessing provenance, dataset rights, physical Android, and real Synthesia validation remain open.
