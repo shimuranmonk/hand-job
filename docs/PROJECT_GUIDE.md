@@ -37,7 +37,7 @@ Imports piano-only MIDI, suggests left/right hand assignments, supports manual c
 
 ## How MIDI Works and Goal
 
-Typically, separate tracks ae used to separate left and right hands in a MIDI-version of a song. 
+Typically, separate tracks ae used to separate left and right hands in a MIDI-version of a song.
 
 This aims to improve existing tracks without any separation of handedness, as well as generating handedness in MIDI files with a single track.
 
@@ -52,7 +52,7 @@ A checkpoint is made available for others to use in the `/example` folder. Param
 ## Legacy training reference (not a verified modern training pipeline)
 
 - Add musicxml files numbered as 0000.musicxml, 0001.musicxml... to `source_data/musicxml`
-- Rename `/example/trains.example.json` to `trains.json` and move it to the root of the folder. 
+- Rename `/example/trains.example.json` to `trains.json` and move it to the root of the folder.
 - Then call the following command:
 ```
 python learn.py
@@ -71,4 +71,3 @@ Outputs:
 ```
 python inference.py example/checkpoint.pth example/simple_midi.example.mid result.mid
 ```
-
