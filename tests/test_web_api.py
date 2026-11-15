@@ -126,6 +126,17 @@ class WebAPITests(unittest.TestCase):
         validate_preservation(mido.MidiFile(file=io.BytesIO(self.data)), mido.MidiFile(file=io.BytesIO(response.data)))
         response.close()
 
+    def test_mixed_instrument_input_is_rejected_without_loading_model(self):
+        source=mido.MidiFile(file=io.BytesIO(self.data))
+        source.tracks[0].insert(2,mido.Message('program_change',channel=3,program=48))
+        buffer=io.BytesIO();source.save(file=buffer);self.data=buffer.getvalue()
+        response=self.upload('/api/analyze')
+        self.assertEqual(response.status_code,400)
+        self.assertIn('piano-only',response.get_json()['error'])
+        self.assertEqual(self.loads,0)
+        self.assertEqual(self.upload('/api/export',assignments='{}').status_code,400)
+        self.assertEqual(self.client.post('/midi-to-midi',data=self.data).status_code,400)
+
 
 if __name__ == '__main__':
     unittest.main()

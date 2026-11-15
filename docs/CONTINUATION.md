@@ -2,6 +2,10 @@
 
 Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; branch fix/midi-integrity.
 
+Latest completed slice: piano-only MVP scope (D-12), approved by the user. Programs 0–5 or unspecified default piano are accepted; active percussion channel 9 or other declared programs are rejected before prediction, without dropping events. All piano hand/voice tracks form one performance. No instrument-selection workflow. Web/CLI/core checks and piano-specific UI copy are implemented; all 11 supplied files pass the scope check. See piano-scope-verification.json: 68 discovered tests pass (64 project methods plus four unrelated local metadata-prototype methods), and the live preview rejects percussion with HTTP 400. Prior latest-verification.json is a historical pre-scope snapshot.
+
+The local preview was restarted with the documented core+web environment at http://127.0.0.1:5088; launcher PID 17072 (verify before stopping). Two pre-existing untracked prototype files remain intentionally outside this slice: synthesia_metadata.py and tests/test_synthesia_metadata.py. No automatic Synthesia setup is claimed from their unit tests.
+
 ## Authority and repository
 
 - Read AGENTS.md and this checkpoint; HANDOVER.md is approved scope, DECISIONS.md records choices.
@@ -31,7 +35,7 @@ Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; branch fix/midi-integrity.
 
 ## Exact next action and blockers
 
-Obtain Synthesia executable path or a manual tester, then execute SYNTHESIA_CHECK.md against the prepared packet. Common install paths and installed-program entries did not locate it; no installer/EULA action was taken. Do not mark Synthesia-compatible until actual import/part/hand/playback checks pass.
+Synthesia is now located at C:\Program Files (x86)\Synthesia\Synthesia.exe, version 10.9.5903. One current 621-note export imported, manual hand assignments and visual playback were observed, and the demo stopped at 20 seconds. The user chose demo-limited checks and then stopped computer control with Escape. Automatic hand setup and the complete file matrix remain unverified; see SYNTHESIA_CHECK.md. Resume computer control only for an authorized task, not automatically as part of the piano-only scope fix. No installer/EULA/unlock action was taken.
 
 Physical Android needs a real device and approved reachable backend setup. Current server binds localhost only; do not expose it publicly as a testing shortcut.
 

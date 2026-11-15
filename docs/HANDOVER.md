@@ -12,6 +12,8 @@ This document establishes durable project memory before technical work. Use **eF
 
 Approved requirements below are authoritative. Recommended designs, proposed acceptance thresholds, unknowns, and unverified hypotheses are explicitly distinguished. Do not silently promote them to approved decisions. Amend durable decisions when later evidence or user direction changes them.
 
+Subsequent approved clarification (2026-11-15): focus the MVP on the main piano performance in piano-only MIDI. Separate piano hand/voice tracks belong to that performance; mixed-instrument arrangements and an instrument-selection workflow are outside the current MVP. Preserve the piano source and its events; reject declared percussion/non-piano input rather than silently dropping or hand-labeling accompaniment. See D-12 in docs/DECISIONS.md for the bounded detection policy.
+
 ## 2. Repository and starting evidence
 
 - Authorized repository: [shimuranmonk/hand-job](https://github.com/shimuranmonk/hand-job), a fork of [sarapple/midi_hands](https://github.com/sarapple/midi_hands).

@@ -17,6 +17,8 @@ Use a different output filename. No configuration file needs moving. `--config p
 
 For the local responsive correction screen, install `requirements/web.txt`, run `python server.py`, and open [localhost:5000](http://127.0.0.1:5000). Import a MIDI, edit individual notes or selected groups, and export the corrected file. See [web preview instructions and limits](docs/WEB_PREVIEW.md). Edits last only while the page remains open; actual Android and Synthesia acceptance checks are still pending.
 
+The current MVP targets **piano-only MIDI**. Separate right/left-hand or piano-voice tracks are processed together. Declared drums or other instruments are rejected with a clear message; multi-instrument selection and accompaniment processing are outside the current scope.
+
 MIDI Left and Right-Handedness Transcription (For Piano)
 
 ## What This Does

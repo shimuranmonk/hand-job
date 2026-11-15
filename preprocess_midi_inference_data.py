@@ -6,6 +6,7 @@ from mido import MidiTrack, MidiFile, Message
 from preprocess_data_lstm_helpers import PreprocessDataLSTMHelpers
 from utils import Utils
 from midi_engine import export_hands, read_midi, read_note_events
+from piano_scope import require_piano_only
 
 class PreprocessMIDIInferenceData():
     # Training: MusicXML staff 1 -> +1 (right), staff 2 -> -1 (left).
@@ -188,6 +189,7 @@ class PreprocessMIDIInferenceData():
         sequence_length = 16
         mid = source_midi if source_midi is not None else read_midi(midi_input_filename)
         (notes, _other_messages) = PreprocessMIDIInferenceData.midifile_to_dict(mid)
+        require_piano_only(mid)
 
         on_off_pairs_of_notes = PreprocessMIDIInferenceData.get_on_off_note_pairs(notes)
         notes_normalized = PreprocessMIDIInferenceData.normalize_all_notes(on_off_pairs_of_notes)

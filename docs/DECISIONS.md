@@ -45,3 +45,11 @@ User confirmed track index 1=RIGHT and 2=LEFT for the initial four files on 2026
 Original unchanged-checkpoint decoder scored 7.98% on 3,585 confirmed notes. Training helper encodes staff 1/right as +1, while inference called positive LEFT. The decoder now maps nonnegative RIGHT and negative LEFT, matching training semantics and its zero boundary. That correction scored 92.02% on the same small development sample versus pitch baseline 90.01%. No weights, architecture, or normalization changed. See REAL_MIDI_RESULTS.md; do not generalize this score or call the reused sample untouched held-out evidence.
 
 The separate non-rest=-1 diagnostic scored 92.64% overall but changed individual-piece results in both directions. It remains unactivated pending a broader preprocessing-contract review and independent labels. Actual Synthesia/device checks and release approval remain open.
+
+## D-12 — main-piano-only MVP
+
+Approved by the user on 2026-11-15: the Synthesia target is the main piano performance; mixed-instrument MIDI is not a current target. Keep the default simple, with no instrument-selection wizard. Multiple piano hand/voice tracks are processed together, not ranked by size or reduced to one physical track.
+
+Implementation accepts sounding notes with active zero-based programs 0–5 (acoustic/electric pianos), with unspecified programs assumed to be default piano 0. Active percussion channel 9 (human channel 10) or other declared instrument programs produce a clear unsupported-input error before prediction. Program state is followed by channel and time across source tracks. Track names are not trusted as instrument proof. Incomplete/misleading MIDI instrument declarations cannot be identified acoustically; this is a declared-instrument check, not audio recognition.
+
+No note/event is silently removed, no source instrument is converted, and no accompaniment is assigned to piano hands. The same policy applies to web analysis/export and core/CLI prediction. The low-level MIDI preservation engine remains independent of this product-level scope. All 11 supplied files pass this policy. Revisit mixed-instrument support only if the user expands scope.

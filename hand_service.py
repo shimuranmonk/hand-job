@@ -5,6 +5,7 @@ import torch
 
 from midi_engine import export_hands, read_midi, read_note_events
 from midi_validation import MIDIIntegrityError
+from piano_scope import PianoOnlyError, require_piano_only
 from preprocess_midi_inference_data import PreprocessMIDIInferenceData as P
 
 
@@ -23,6 +24,10 @@ def parse_source(data, max_notes=20000):
         raise
     except (OSError, EOFError, ValueError, KeyError, IndexError, UnicodeError) as error:
         raise InvalidMIDIInput('This MIDI could not be read or contains unmatched note endings.') from error
+    try:
+        require_piano_only(source)
+    except PianoOnlyError as error:
+        raise InvalidMIDIInput(str(error)) from error
     if len(pairs) > max_notes:
         raise InvalidMIDIInput(f'This local preview supports up to {max_notes:,} notes per file.')
     return source, pairs

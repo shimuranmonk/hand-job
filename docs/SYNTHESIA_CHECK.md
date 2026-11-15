@@ -1,4 +1,8 @@
-# Prepared compatibility check — not yet executed
+# Synthesia compatibility check — partial and demo-limited
+
+Observed 2026-11-15: the user supplied C:\Program Files (x86)\Synthesia\ and Synthesia 10.9.5903 opened successfully. The current A Time for Us suggested export loaded all 621 notes across five playable parts. All initially appeared as background; the map was used to assign three left-hand and two right-hand parts. Assigned colors and visual playback were observed, but the demo stopped at 20 seconds. Full-song playback, unrestricted practice, portability, and the 11-file acceptance matrix are not passed. The user chose demo-limited checks and later stopped computer control with Escape.
+
+An optional .synthesia metadata prototype and four unit tests exist locally, uncommitted, in synthesia_metadata.py and tests/test_synthesia_metadata.py. Its official-format synthetic probe is in output/synthesia-metadata-probe/. The automatic hand-setup behavior has NOT been verified inside Synthesia. It is not integrated into the app or included in the piano-only task commit.
 
 The local test packet is output/synthesia-validation/. It contains 11 suggested-hand MIDI files, an internal .handjob.json track map for each, and report.json. Inputs were read from the user's supplied MIDI folder. No user music or derivatives are tracked in Git or published remotely.
 
@@ -20,4 +24,4 @@ All packet files have already passed decoded MIDI event/timing comparison. Each 
 6. Reopen the song and verify hand setup persistence. If automatic assignment or portability fails, document the exact behavior and decide whether explicit hand-track naming or official sidecar metadata is needed. Do not invent an official metadata schema or silently change preserved original metadata.
 7. Mark each file pass/fail/pending with evidence. AC-05 remains pending until these actual checks are complete; a generic “MIDI imported” result is insufficient.
 
-No Synthesia installation was found in common Program Files paths or installed-program entries. A portable/other installation may still exist; its executable path or a manual tester is needed. No software was installed, no EULA accepted, and no Synthesia result is claimed. Physical Android validation likewise needs an actual device and an explicitly selected reachable development setup; localhost viewport emulation does not supply it.
+The initial install search was superseded by the user's supplied path above. No software was installed and no EULA/unlock action was taken. Full compatibility remains unverified within the demo limits. Physical Android validation likewise needs an actual device and an explicitly selected reachable development setup; localhost viewport emulation does not supply it.
