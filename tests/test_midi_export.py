@@ -63,6 +63,8 @@ class ExportTests(unittest.TestCase):
         self.assertEqual(exported.tracks[1][0].name, 'Piano')
         self.assertEqual([m.note for m in exported.tracks[1] if m.type == 'note_on' and m.velocity], [48])
         self.assertEqual([m.note for m in exported.tracks[2] if m.type == 'note_on' and m.velocity], [72])
+        self.assertEqual([t['hand'] for t in exported.handjob_track_map], [None,'LEFT','RIGHT'])
+        self.assertEqual([t['note_count'] for t in exported.handjob_track_map], [0,1,1])
         self.assertEqual(validate_preservation(source, exported)['end_tick'], 1440)
 
     def test_manual_labels_route_both_endpoints_of_selected_notes(self):

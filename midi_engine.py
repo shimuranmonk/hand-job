@@ -172,6 +172,7 @@ def export_hands(source, labeled_pairs):
 
     output = mido.MidiFile(type=1, ticks_per_beat=source.ticks_per_beat,
                            charset=source.charset)
+    track_map = []
     for track_index, track in enumerate(source.tracks):
         routed = defaultdict(list)
         tick = 0
@@ -189,6 +190,10 @@ def export_hands(source, labeled_pairs):
                 new_track.append(message.copy(time=absolute_tick - previous_tick))
                 previous_tick = absolute_tick
             new_track.append(mido.MetaMessage('end_of_track', time=tick - previous_tick))
+            note_count = sum(message.type == 'note_on' and message.velocity > 0 for _, message in routed[lane])
+            track_map.append(dict(output_track=len(output.tracks), source_track=track_index,
+                                  hand=('LEFT' if lane % 2 == 0 else 'RIGHT') if note_count else None,
+                                  note_count=note_count))
             output.tracks.append(new_track)
     if len(output.tracks) > 65535:
         raise MIDIIntegrityError('Hand splitting exceeds the MIDI track-count limit')
@@ -203,4 +208,5 @@ def export_hands(source, labeled_pairs):
     buffer.seek(0)
     verified = mido.MidiFile(file=buffer, charset=source.charset)
     validate_preservation(source, verified)
+    verified.handjob_track_map = track_map
     return verified
