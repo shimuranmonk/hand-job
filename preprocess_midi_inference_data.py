@@ -5,35 +5,12 @@ import mido
 from mido import MidiTrack, MidiFile, Message
 from preprocess_data_lstm_helpers import PreprocessDataLSTMHelpers
 from utils import Utils
+from midi_engine import export_hands, read_midi, read_note_events
 
 class PreprocessMIDIInferenceData():
     @staticmethod
     def midifile_to_dict(mid):
-        '''Pull out midi messages and specifically get note_on and note_off messages'''
-        notes = []
-        other_messages = []
-        time_so_far = 0
-        for msg in mido.merge_tracks(mid.tracks):
-            msg_dict = vars(msg).copy()
-            time_so_far += msg_dict["time"]
-            
-            print(time_so_far)
-            if (msg_dict["type"] == "note_on" or msg_dict["type"] == "note_off"):
-                note = {
-                    "channel": msg_dict["channel"],
-                    "type": msg_dict["type"],
-                    "note": msg_dict["note"],
-                    "velocity": msg_dict["velocity"],
-                    "time": msg_dict["time"],
-                    "time_so_far": time_so_far
-                }
-                notes.append(note)
-            else:
-                other_messages.append({
-                    "time_so_far": time_so_far,
-                    "message": msg_dict
-                })
-        return notes, other_messages
+        return read_note_events(mid)
 
     @staticmethod
     def normalize_all_notes(all_notes):
@@ -116,6 +93,7 @@ class PreprocessMIDIInferenceData():
                     note["type"],
                     note=note["note"],
                     velocity=note["velocity"],
+                    channel=note["channel"],
                     time=delta
                 )
             )
@@ -151,8 +129,10 @@ class PreprocessMIDIInferenceData():
         )
         
     @staticmethod
-    def get_midi_file_with_handedness(all_notes):
-        '''Takes in the note dictionaries for all notes and returns a mido MidiFile.'''
+    def get_midi_file_with_handedness(all_notes, source_midi=None):
+        '''Export source-aware data when available; legacy note-only helper otherwise.'''
+        if source_midi is not None:
+            return export_hands(source_midi, all_notes)
         outfile = MidiFile()
         right_hand_track = MidiTrack()
         left_hand_track = MidiTrack()
@@ -195,11 +175,11 @@ class PreprocessMIDIInferenceData():
         return [item for sublist in result for item in sublist][:note_count]
 
     @staticmethod
-    def get_handedness_from_all_notes(model=None, midi_input_filename=None):
+    def get_handedness_from_all_notes(model=None, midi_input_filename=None, source_midi=None):
         '''Get handedness information from a midi input filename,
         passed through a neural net LSTM model and returns an array of handedness.'''
         sequence_length = 16
-        mid = mido.MidiFile(file=midi_input_filename)
+        mid = source_midi if source_midi is not None else read_midi(midi_input_filename)
         (notes, _other_messages) = PreprocessMIDIInferenceData.midifile_to_dict(mid)
 
         on_off_pairs_of_notes = PreprocessMIDIInferenceData.get_on_off_note_pairs(notes)
@@ -231,6 +211,8 @@ class PreprocessMIDIInferenceData():
     ):
         '''Get handedness information from a midi input filename,
         passed through a neural net LSTM model and returns a mido MidiFile to be saved somewhere'''
-        hands_and_notes = PreprocessMIDIInferenceData.get_handedness_from_all_notes(model=model, midi_input_filename=midi_input_filename)
-
-        return PreprocessMIDIInferenceData.get_midi_file_with_handedness(hands_and_notes)
+        source = read_midi(midi_input_filename)
+        hands_and_notes = PreprocessMIDIInferenceData.get_handedness_from_all_notes(
+            model=model, source_midi=source)
+        return PreprocessMIDIInferenceData.get_midi_file_with_handedness(
+            hands_and_notes, source_midi=source)
