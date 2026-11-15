@@ -1,62 +1,62 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script
-        src="https://code.jquery.com/jquery-3.5.0.js"
-        integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc="
-        crossorigin="anonymous"></script>
-    <script>
-        function download(filename, blob) {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'file.mid';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            alert('your file has downloaded!');
-        }
-        $(document).ready(() => {
-            document.querySelector('#fileInput').addEventListener('change',   function () {
-
-                var reader = new FileReader();
-                var selectedFile = this.files[0];
-
-                reader.onload = function () {
-                    var bytesArray = this.result;
-                    fetch('/midi-to-midi', {
-                        method: "POST",
-                        contentType: "application/octet-stream",
-                        body: bytesArray
-                    })
-                    .then((resp) => {
-                        if (resp.status !== 200) {
-                            throw new Error("Response from server was not successful");
-                        }
-                        return resp.blob();
-                    })
-                    .then((blob) => {
-                        download("audio_midi.mid", blob);
-                    })
-                    .catch((reason) => {
-                        alert(reason);
-                    })
-                }
-                reader.readAsArrayBuffer(selectedFile);
-            }, false);
-        });
-
-    </script>
-    <title>Document</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172c36">
+  <title>HandJob · MIDI hand editor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='editor.css') }}">
+  <script src="{{ url_for('static', filename='editor.js') }}" defer></script>
 </head>
 <body>
-    <div>
-        <h2>Add a MIDI file here</h2>
-        <p>The server will return a MIDI file with left and right hands encoded.</p>
-        <input id="fileInput" type="file" accept="audio/x-midi, audio/midi" />
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">♮</span>HandJob</div>
+      <span class="tag">MIDI HAND EDITOR · PREVIEW</span>
+    </header>
+    <section class="intro" aria-labelledby="title">
+      <div><p class="eyebrow">A little clarity for every passage</p><h1 id="title">Give every note a hand.</h1>
+      <p>Start with suggested hands. Adjust a note or an entire passage, then export your MIDI with its music intact.</p></div>
+      <div class="steps" aria-label="Workflow"><span><b>1</b>Import</span><span><b>2</b>Review</span><span><b>3</b>Export</span></div>
+    </section>
+    <div class="workspace">
+      <aside class="card sidebar" aria-label="File and export">
+        <h2>Your MIDI</h2>
+        <div id="dropzone" class="dropzone"><span class="upload-icon" aria-hidden="true">↥</span><strong>Bring in a piece</strong><p>Drop a MIDI here<br>.mid or .midi · up to 16 MB</p>
+          <label id="fileButton" class="file-button">Choose MIDI<input id="fileInput" type="file" accept=".mid,.midi,audio/midi,audio/x-midi" aria-label="Choose a MIDI file"></label>
+        </div>
+        <div class="file-info"><p id="fileName" class="file-name">No file selected</p><p id="fileDetail" class="file-detail">Your original stays unchanged.</p></div>
+        <div class="legend"><div><span><i class="dot"></i>Left hand</span><strong id="leftCount">0</strong></div><div><span><i class="dot right-dot"></i>Right hand</span><strong id="rightCount">0</strong></div></div>
+        <p class="sidebar-note">Hand suggestions need your review. Synthesia playback has not yet been verified.</p>
+        <button id="exportButton" class="primary export" disabled>Check &amp; export MIDI ↗</button>
+      </aside>
+      <section id="review" class="card review" aria-labelledby="reviewTitle" aria-busy="false">
+        <header class="review-header"><div><h2 id="reviewTitle">Review the hands</h2><p id="reviewDetail">Import a MIDI to get started</p></div><span id="editCount" class="edit-count">0 edits</span></header>
+        <div class="filters">
+          <label class="search-label" for="search">Find a note<input id="search" type="search" placeholder="Note name or MIDI pitch" autocomplete="off"></label>
+          <label for="handFilter">Hand<select id="handFilter"><option value="">All hands</option><option value="LEFT">Left hand</option><option value="RIGHT">Right hand</option><option value="EDITED">Edited notes</option></select></label>
+          <label for="trackFilter">Source track<select id="trackFilter"><option value="">All tracks</option></select></label>
+        </div>
+        <div class="groupbar" aria-label="Group editing">
+          <span id="selectedCount" class="selection-label">0 selected</span>
+          <button id="setLeft" class="left" disabled>Assign left</button><button id="setRight" class="right" disabled>Assign right</button>
+          <button id="restoreSelected" class="quiet small" disabled>Restore suggestions</button>
+          <button id="undo" class="quiet small" disabled>Undo</button>
+          <button id="selectMatching" class="quiet small" disabled>Select matching</button><button id="clearSelection" class="quiet small" disabled>Clear</button>
+        </div>
+        <div id="tableRegion" hidden>
+          <div class="table-wrap"><table aria-label="MIDI notes and hand assignments">
+            <thead><tr><th><input id="selectPage" type="checkbox" aria-label="Select notes on this page"></th><th>Note</th><th>Beat</th><th class="duration-column">Length</th><th class="track-column">Track</th><th>Hand</th></tr></thead>
+            <tbody id="noteRows"></tbody>
+          </table></div>
+          <div class="pagination"><span id="pageInfo">0 notes</span><div><button id="prevPage" disabled>← Previous</button> <button id="nextPage" disabled>Next →</button></div></div>
+        </div>
+        <div id="empty" class="empty"><div class="empty-icon" aria-hidden="true">♬</div><h3 id="emptyHeading">Your notes will appear here</h3><p id="emptyText">Import a MIDI file, review the suggested hands, and make it your own.</p></div>
+      </section>
     </div>
+    <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+    <footer class="footer"><span>Your file is processed by the connected HandJob server. Keep this page open to retain your edits.</span><span>Original timing, pitch, tempo &amp; events checked on export.</span></footer>
+    <noscript><p>Enable JavaScript to import MIDI and edit hand assignments.</p></noscript>
+  </main>
 </body>
 </html>

@@ -2,7 +2,7 @@
 
 ## HandJob continuation
 
-Project scope and status: [handover](docs/HANDOVER.md), [continuation](docs/CONTINUATION.md), and [baseline audit](docs/PHASE_0_AUDIT.md). Development is fork-only. The original checkpoint is retained; its hand-prediction accuracy and actual Synthesia compatibility remain unverified.
+Project scope and status: [handover](docs/HANDOVER.md), [continuation](docs/CONTINUATION.md), and [baseline audit](docs/PHASE_0_AUDIT.md). Development is fork-only. The original checkpoint is retained; [real MIDI results](docs/REAL_MIDI_RESULTS.md) record the four-piece development comparison and its limits. Actual Synthesia compatibility remains unverified.
 
 For the verified Windows/Python 3.13 core setup:
 
@@ -14,6 +14,8 @@ python -m venv .inference-venv
 ```
 
 Use a different output filename. No configuration file needs moving. `--config path/to/config.json` accepts one matching model parameter set. See [core setup](docs/INFERENCE_CORE.md) and [MIDI integrity contract](docs/MIDI_INTEGRITY.md) for supported inputs and explicit rejection cases. Core requirements do not install web or training dependencies.
+
+For the local responsive correction screen, install `requirements/web.txt`, run `python server.py`, and open [localhost:5000](http://127.0.0.1:5000). Import a MIDI, edit individual notes or selected groups, and export the corrected file. See [web preview instructions and limits](docs/WEB_PREVIEW.md). Edits last only while the page remains open; actual Android and Synthesia acceptance checks are still pending.
 
 MIDI Left and Right-Handedness Transcription (For Piano)
 
