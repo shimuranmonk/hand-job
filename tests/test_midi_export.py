@@ -95,11 +95,60 @@ class ExportTests(unittest.TestCase):
         source = mido.MidiFile()
         source.tracks.append(mido.MidiTrack([
             mido.Message('note_on', note=72),
+            mido.Message('note_on', note=48),
             mido.Message('control_change', control=64, value=127),
-            mido.Message('note_off', note=72, time=120),
+            mido.Message('note_off', note=72),
+            mido.Message('note_off', note=48),
         ]))
         with self.assertRaisesRegex(MIDIIntegrityError, 'ordering'):
             export_hands(source, label(source))
+
+    def test_hand_switching_same_pitch_retriggers_use_additional_safe_tracks(self):
+        source = mido.MidiFile(type=0)
+        source.tracks.append(mido.MidiTrack([
+            mido.Message('note_on', note=60), mido.Message('note_off', note=60, time=120),
+            mido.Message('note_on', note=60), mido.Message('note_off', note=60, time=120),
+            mido.Message('note_on', note=60), mido.Message('note_off', note=60, time=120)]))
+        pairs = label(source)
+        for pair, hand in zip(pairs, ('LEFT','RIGHT','LEFT')):
+            pair['hand'] = hand
+        exported = export_hands(source, pairs)
+        self.assertEqual(len(exported.tracks),3)
+        validate_preservation(source,exported)
+
+    def test_uniform_right_hand_retains_same_tick_control_order(self):
+        source = mido.MidiFile(type=0)
+        source.tracks.append(mido.MidiTrack([
+            mido.Message('note_on', note=72),
+            mido.Message('control_change', control=64, value=127),
+            mido.Message('note_off', note=72,time=120)]))
+        validate_preservation(source,export_hands(source,label(source)))
+
+    def test_mixed_hands_keep_aftertouch_after_a_right_note_release(self):
+        source = mido.MidiFile(type=0)
+        source.tracks.append(mido.MidiTrack([
+            mido.Message('note_on', note=48), mido.Message('note_off',note=48,time=100),
+            mido.Message('note_on', note=72), mido.Message('note_off',note=72,time=100),
+            mido.Message('aftertouch', value=0)]))
+        validate_preservation(source,export_hands(source,label(source)))
+
+    def test_control_order_cycle_with_one_hand_can_share_a_track(self):
+        source = mido.MidiFile(type=0)
+        source.tracks.append(mido.MidiTrack([
+            mido.Message('note_on', note=72),
+            mido.Message('control_change', control=64,value=127),
+            mido.Message('note_off', note=72)]))
+        validate_preservation(source,export_hands(source,label(source)))
+
+    def test_long_dependency_chain_does_not_recurse_or_change_notes(self):
+        source = mido.MidiFile(type=0)
+        track = mido.MidiTrack()
+        for _ in range(1100):
+            track.extend([mido.Message('note_on',note=60), mido.Message('note_off',note=60,time=1)])
+        source.tracks.append(track)
+        exported = export_hands(source,label(source))
+        self.assertEqual(sum(m.type=='note_on' for t in exported.tracks for m in t),1100)
+        validate_preservation(source,exported)
 
     def test_type_zero_becomes_type_one_only_when_split(self):
         source = mido.MidiFile(type=0)
