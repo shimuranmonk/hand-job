@@ -2,8 +2,6 @@
 
 **We Know Exactly Where Your Fingers Should Go.**
 
-![HandJob logo](static/handjob-logo.png)
-
 A black, gold, and white piano MIDI hand editor: predict left/right hands, review individual notes or groups, and export with timing, pitch, tempo, channels, and events checked. Individual finger assignment is a planned post-MVP feature; the tagline is branding, not a claim that fingering exists.
 
 **Status: working local preview, not a release-verified MVP.** Further features and production architecture are still being planned on paper. The next acceptance step is user testing of exported MIDI in licensed Synthesia on an Android phone and iPad. This does not add an iOS app to scope.
