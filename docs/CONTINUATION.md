@@ -2,6 +2,8 @@
 
 ## Main publication update — 2026-11-15
 
+Published application/README commit 5226e4ddd0b56398d2337aa48c0641d8b6d3e490 to origin/main; git ls-remote verified the exact SHA. Local branch is main. Only the two excluded metadata prototype files remain untracked. The README-only remote change was merged without restoring its logo. Final diff from previous origin/main passes whitespace checks.
+
 User authorized publishing the latest reviewed application to fork main, shortening README to title/tagline, personal origin, attribution and license, with no README logo. Technical README content moved to docs/PROJECT_GUIDE.md. Current hosting choice is local-only on this laptop at http://127.0.0.1:5088; HOSTING.md is reference guidance, not an active deployment request. Prior hosting next steps below are superseded by local-only preference.
 
 Publication includes HJ-PLAY-001 advisory review and preview-template recovery, with associated tests/docs. Excludes the two unrelated untracked Synthesia metadata prototypes. Observed validation: 79 discovered tests passed (75 project plus 4 local prototype tests); JavaScript syntax and git diff --check passed. Origin/main fetched at a1d61d13fb402e3fccae3fd85ec839842a6f7bca, whose sole change removes the README logo; that change is retained. No public server or GitHub Pages runtime is created. Publication result must be verified after push; older uncommitted checkpoints below are historical.
