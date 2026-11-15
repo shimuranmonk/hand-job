@@ -1,0 +1,38 @@
+
+STDERR
+Traceback (most recent call last):
+  File "<repo>\inference.py", line 28, in <module>
+    inference(ARGS.model_path, ARGS.input_midi_file, ARGS.output_midi_file)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>\inference.py", line 13, in inference
+    CommandCenter.load_model_for_inference(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        lstm_model_params=train["lstm_model_params"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        midi_output_filename=output_midi_file
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "<repo>\command_center.py", line 128, in load_model_for_inference
+    midifile = PreprocessMIDIInferenceData.get_left_right_hands_midifile(
+        model,
+        midi_input_filename=midi_input_filename
+    )
+  File "<repo>\preprocess_midi_inference_data.py", line 251, in get_left_right_hands_midifile
+    hands_and_notes = PreprocessMIDIInferenceData.get_handedness_from_all_notes(model=model, midi_input_filename=midi_input_filename)
+  File "<repo>\preprocess_midi_inference_data.py", line 219, in get_handedness_from_all_notes
+    mid = mido.MidiFile(file=midi_input_filename)
+  File "<repo>\.audit-venv\Lib\site-packages\mido\midifiles\midifiles.py", line 317, in __init__
+    self._load(file)
+    ~~~~~~~~~~^^^^^^
+  File "<repo>\.audit-venv\Lib\site-packages\mido\midifiles\midifiles.py", line 360, in _load
+    self.ticks_per_beat) = read_file_header(infile)
+                           ~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<repo>\.audit-venv\Lib\site-packages\mido\midifiles\midifiles.py", line 103, in read_file_header
+    name, size = read_chunk_header(infile)
+                 ~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<repo>\.audit-venv\Lib\site-packages\mido\midifiles\midifiles.py", line 93, in read_chunk_header
+    header = infile.read(8)
+             ^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'read'

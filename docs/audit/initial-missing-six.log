@@ -1,0 +1,12 @@
+
+STDERR
+Traceback (most recent call last):
+  File "<repo>\inference.py", line 4, in <module>
+    from command_center import CommandCenter
+  File "<repo>\command_center.py", line 5, in <module>
+    from preprocess_data_musicxml_helpers import PreprocessDataMusicXMLHelpers
+  File "<repo>\preprocess_data_musicxml_helpers.py", line 4, in <module>
+    from libs.magenta_musicxml.magenta_musicxml_parser import MusicXMLDocument
+  File "<repo>\libs\magenta_musicxml\magenta_musicxml_parser.py", line 28, in <module>
+    import six
+ModuleNotFoundError: No module named 'six'
