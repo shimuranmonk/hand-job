@@ -1,5 +1,20 @@
 # MIDI Hands
 
+## HandJob continuation
+
+Project scope and status: [handover](docs/HANDOVER.md), [continuation](docs/CONTINUATION.md), and [baseline audit](docs/PHASE_0_AUDIT.md). Development is fork-only. The original checkpoint is retained; its hand-prediction accuracy and actual Synthesia compatibility remain unverified.
+
+For the verified Windows/Python 3.13 core setup:
+
+```powershell
+python -m venv .inference-venv
+.\.inference-venv\Scripts\python.exe -m pip install -r requirements/inference-core.txt
+.\.inference-venv\Scripts\python.exe -m unittest discover -s tests -v
+.\.inference-venv\Scripts\python.exe inference.py example/checkpoint.pth input.mid result.mid
+```
+
+Use a different output filename. No configuration file needs moving. `--config path/to/config.json` accepts one matching model parameter set. See [core setup](docs/INFERENCE_CORE.md) and [MIDI integrity contract](docs/MIDI_INTEGRITY.md) for supported inputs and explicit rejection cases. Core requirements do not install web or training dependencies.
+
 MIDI Left and Right-Handedness Transcription (For Piano)
 
 ## What This Does
@@ -37,11 +52,10 @@ Outputs:
 
 ## To generate a midi file from an original with left and right hand encodings
 
-- Ensure the `train.json` file contains only one parameter set, and that it is the same one used for learning. If trying it out, please rename `train.example.json` to `train.json` and move it to the project root level and run the inference.
+- The standalone command uses `example/trains.example.json` by default. Keep that file in place; use `--config` for a different matching, single-configuration file.
 - Call the following command:
 ```
-mv example/trains.example.json ./trains.json
-python inference.py example/checkpoint.pth example/simple_midi.example.mid output/output.mid
+python inference.py example/checkpoint.pth example/simple_midi.example.mid result.mid
 ```
 
 ## Credits

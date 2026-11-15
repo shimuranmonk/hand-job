@@ -1,5 +1,5 @@
 # Reference core inference/test environment: CPython 3.13, Windows x64.
-# Does not include the legacy CLI's training imports or the Flask server.
+# Supports the standalone CLI and core tests; excludes Flask and training tools.
 torch==2.15.0
 scikit-learn==1.9.1
 mido==1.3.3

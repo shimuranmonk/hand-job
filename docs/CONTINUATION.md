@@ -20,12 +20,12 @@ Updated: 2026-11-15 (Asia/Manila). eFORGE Continue; branch fix/midi-integrity.
 
 ## Exact next task
 
-T-04: repair standalone inference.py setup/output handling using the minimal core; retain checkpoint/config semantics, add CLI tests. Then repair Flask startup and request validation separately. No app rewrite or model replacement.
+T-04 verified: standalone CLI now uses core-only imports, source-relative default config, restricted CPU checkpoint loading, correct filenames/streams, and source-overwrite protection. All 33 tests pass in the core environment. Next T-05: repair Flask startup and request validation, then build a stateless manual-correction flow in the existing web stack. No app rewrite or model replacement.
 
 ## Open gates and limits
 
 - Export supports synchronous PPQ types 0/1 with fully paired notes. Type 2, SMPTE, malformed notes, and unsafe same-tick reorderings fail explicitly.
-- Original CLI still imports training stack and writes filenames as file objects; Flask-Limiter startup remains broken. Core pins do not include web/training dependencies.
+- Standalone CLI works with core pins; Flask-Limiter startup remains broken. Core pins do not include web/training dependencies.
 - Staff-sign mismatch, scaler/rest/unit consistency, model accuracy, licensed evaluation data and checkpoint provenance unresolved. No label flip or retraining without evidence.
 - Manual note/group UI, Android/desktop usability, production architecture/NFR budgets, offline Android feasibility, rights determination, and actual Synthesia validation remain pending.
 - iOS excluded; player/fingers deferred. FastAPI/React not locked.

@@ -4,7 +4,7 @@ Task T-01, authorized by the user's “proceed” after the initial Phase 0 audi
 
 ## Scope and environment
 
-Reference platform: Windows x64, CPython 3.13.3, CPU. requirements/inference-core.txt pins the four direct dependencies needed by the original LSTM and MIDI inference helpers. tests/test_sequence_inference.py exercises those helpers and the original checkpoint without importing the legacy CLI's unrelated training dependencies. This is a bounded core reference environment, not the final production runtime, a full training environment, or a working Flask installation.
+Reference platform: Windows x64, CPython 3.13.3, CPU. requirements/inference-core.txt pins the four direct dependencies needed by the original LSTM, MIDI inference helpers, and repaired standalone CLI. tests/test_sequence_inference.py exercises those helpers and the original checkpoint. This is a bounded core reference environment, not the final production runtime, a full training environment, or a working Flask installation.
 
 Fresh environment setup from repository root:
 
@@ -17,7 +17,7 @@ python -m venv .inference-venv
 
 The direct pins are torch 2.15.0, scikit-learn 1.9.1, mido 1.3.3, and numpy 2.5.4. The separately recorded core-environment.txt captures resolved transitive versions for this verification. It is an environment snapshot, not a cross-platform lockfile. Other Python versions/platforms and accelerators are untested. requirements.txt remains the original historical input and still fails on sklearn; it is not the setup command for this core slice.
 
-To call the core from Python, construct LSTMAudio with example/trains.example.json parameters, load checkpoint model_state_dict with torch.load(weights_only=True, map_location='cpu'), call model.eval(), and pass a binary MIDI stream to PreprocessMIDIInferenceData.get_left_right_hands_midifile inside torch.no_grad(). The regression tests provide a complete executable example. Filename support in inference.py and web startup remain separate defects.
+To call the core from Python, use inference.load_inference_model and pass a filename, Path, or binary stream to PreprocessMIDIInferenceData.get_left_right_hands_midifile inside torch.inference_mode(). The loader uses the existing model parameters, strict state-dict loading, weights_only=True, and CPU mapping. Web startup is a separate task.
 
 ## Bounded design and behavior
 
@@ -41,4 +41,6 @@ Before repair, the tests produced 14 failing subcases and one error across six t
 
 ## Remaining work
 
-Next bounded repair: note-on/off pairing (H-01), with velocity-zero encoding, channel/pitch identity, overlapping notes, and explicit malformed-input policy. Event/timing preservation follows separately. Runtime packaging for the legacy CLI/server, preprocessing/label consistency, dataset rights, quality benchmarking, Android/device tests, and real Synthesia validation remain open.
+Pairing and source-aware preservation repairs are recorded in MIDI_INTEGRITY.md. T-04 repaired the CLI: no training/web imports, config default relative to the source module, explicit alternate single-config support, correct stream/filename output, protected source filename, and clear nonzero failures. Five CLI tests plus prior tests pass (33 total) using only core dependencies, including subprocess execution from another working directory and no output for invalid MIDI.
+
+Web startup, preprocessing/label consistency, dataset rights, quality benchmarking, Android/device tests, and real Synthesia validation remain open.
